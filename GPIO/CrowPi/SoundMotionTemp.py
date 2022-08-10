@@ -4,11 +4,13 @@ import RPi.GPIO as GPIO
 import os, time
 import sys
 import csv
-import dht11
+import Adafruit_DHT 
 
-temp_sensor = 18
-sound_sensor = 12
-motion_sensor = 26
+temp_sensor = 11
+sound_sensor = 24 
+motion_sensor = 23 
+
+pin = 4
 
 namecounter = 0
 threshold = 1024 * (10 ^ 3) #1 megabyte
@@ -26,7 +28,7 @@ def getTempInFarenheit(celsius):
 
 def fileWrite(message):
   global namecounter
-  filename = "/mnt/data/" + "mjbasement_" + str(namecounter) + ".csv"
+  filename = "/mnt/pnydisk/data/" + "mjbasement_" + str(namecounter) + ".csv"
   datafile = open(filename, "a+")
 
   filesize = os.stat(filename).st_size #in bytes
@@ -39,24 +41,33 @@ def fileWrite(message):
 def main():
   # Main program block
   
-  instance = dht11.DHT11(pin = temp_sensor)
   motionValue = 0
+  soundValue = 0
   message = ""
   while True:
-        #get DHT11 sensor value
-        result = instance.read()
+        #humidity, temperature = Adafruit_DHT.read_retry(temp_sensor,pin) 
+
         current_milli_time = int(round(time.time() * 1000))
          
-        if GPIO.input(motion_sensor):
+        if (GPIO.input(motion_sensor) == 1):
               motionValue = 1
         else:
               motionValue = 0
 
+        if (GPIO.input(sound_sensor)==GPIO.LOW):
+              soundValue = 1
+        else:
+              soundValue = 0 
+        time.sleep(0.1)
+
         message = ""
-        message += str(getTempInFarenheit(result.temperature)) + ","
-        message += str(result.humidity) + ","
+        #message += str(getTempInFarenheit(temperature)) + ","
+        #message += str(humidity) + ","
         message += str(motionValue) + ","
+        message += str(soundValue) + ","
         message += str(current_milli_time) + "\n" 
+        print(message)
+
         fileWrite(message)
         time.sleep(2)
 
