@@ -44,6 +44,7 @@ def main():
   motionValue = 0
   soundValue = 0
   message = ""
+  print("Collecting sound and motion data...")
   while True:
         #humidity, temperature = Adafruit_DHT.read_retry(temp_sensor,pin) 
 
@@ -66,7 +67,7 @@ def main():
         message += str(motionValue) + ","
         message += str(soundValue) + ","
         message += str(current_milli_time) + "\n" 
-        print(message)
+        #print(message)
 
         fileWrite(message)
         time.sleep(2)
