@@ -2,6 +2,7 @@
  
 import RPi.GPIO as GPIO
 import os, time
+import sys
 import csv
 import dht11
 
@@ -25,7 +26,7 @@ def getTempInFarenheit(celsius):
 
 def fileWrite(message):
   global namecounter
-  filename = "data/" + "mjbasement_" + str(namecounter) + ".csv"
+  filename = "/mnt/data/" + "mjbasement_" + str(namecounter) + ".csv"
   datafile = open(filename, "a+")
 
   filesize = os.stat(filename).st_size #in bytes
@@ -66,4 +67,4 @@ if __name__ == '__main__':
     main()
   except KeyboardInterrupt:
     GPIO.cleanup()
-    pass
+    sys.exit()
